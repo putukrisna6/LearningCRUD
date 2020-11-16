@@ -6,34 +6,53 @@
 
   $koneksi = mysqli_connect($server, $user, $pass, $database) or die(mysqli_error($koneksi));
 
-  // if bsimpan
+  // if add
   if(isset($_POST['bsimpan'])) {
-    $simpan = mysqli_query($koneksi, "INSERT INTO tmhs
-                                      (nrp, nama, alamat, prodi)
-                                      VALUES
-                                      ('$_POST[tnrp]', '$_POST[tnama]', '$_POST[talamat]', '$_POST[tprodi]')
-                          ");
-    if($simpan) {
-      echo "<script>
-              alert('Success');
-              document.location='index.php#form-mhs';
-            </script>";
-    }
-    else {
-      echo "<script>
-              alert('Error');
-              document.location='index.php#form-mhs';
-            </script>";
+    if($_GET['page'] == "edit") {
+      $edit = mysqli_query($koneksi, "UPDATE tmhs set
+                                      nrp = '$_POST[tnrp]',
+                                      nama = '$_POST[tnama]',
+                                      alamat = '$_POST[talamat]',
+                                      prodi = '$_POST[tprodi]'
+                                      WHERE id_mhs = '$_GET[id]'
+                            ");
+      if($edit) {
+        echo "<script>
+                alert('Edit Success');
+                document.location='display.php';
+              </script>";
+      }
+      else {
+        echo "<script>
+                alert('Error');
+                document.location='edit.php';
+              </script>";
+      }
     }
   }
- ?>
+
+  // if edit / delete
+  if (isset($_GET['page'])) {
+    if ($_GET['page'] == "edit") {
+      $tampil = mysqli_query($koneksi, "SELECT * FROM tmhs WHERE id_mhs = '$_GET[id]'");
+      $data = mysqli_fetch_array($tampil);
+
+      if($data) {
+        $vnrp = $data['nrp'];
+        $vnama = $data['nama'];
+        $valamat = $data['alamat'];
+        $vprodi = $data['prodi'];
+      }
+    }
+  }
+?>
 
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Home - Basic CRUD</title>
+    <title>Edit - Basic CRUD</title>
     <meta name="description" content="CRUD + PHP + Bootstrap Implementation">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700">
@@ -45,41 +64,27 @@
 <body>
     <nav class="navbar navbar-dark navbar-expand-lg fixed-top bg-white portfolio-navbar gradient">
         <div class="container"><a class="navbar-brand logo" href="#">Basic CRUD</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navbarNav"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse"
-                id="navbarNav">
-                <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item"><a class="nav-link active" href="index.php">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="display.php">Display</a></li>
-                </ul>
-            </div>
         </div>
     </nav>
-    <main class="page lanidng-page">
-        <section class="portfolio-block block-intro">
-            <div class="container"><i class="fa fa-database fa-lg"></i>
-                <div class="about-me">
-                    <p>Hello! This simple page is made to implement basic CRUD operations with PHP, MySQL, and Bootstrap.</p><a class="btn btn-outline-primary" role="button" href="display.php">Display Data</a></div>
-            </div>
-        </section>
-    </main>
-    <section class="portfolio-block website gradient">
+    <section class="portfolio-block website">
         <div class="container" id="form-mhs">
-            <h1 class="text-center">Form</h1>
+            <h1 class="text-center">Edit</h1>
             <form action="" method="post">
                 <div class="form-group">
                   <label>NRP</label>
-                  <input class="form-control" type="text" name="tnrp" placeholder="Input NRP" required="">
+                  <input class="form-control" type="text" name="tnrp" placeholder="Input NRP" required="" value="<?=@$vnrp?>">
                 </div>
                 <div class="form-group">
                   <label>Nama</label>
-                  <input class="form-control" type="text" name="tnama" placeholder="Input Nama" required="">
+                  <input class="form-control" type="text" name="tnama" placeholder="Input Nama" required="" value="<?=@$vnama?>">
                 </div>
                 <div class="form-group">
                   <label>Alamat</label>
-                  <textarea class="form-control" name="talamat" type="text" placeholder="Input Alamat" required=""></textarea></div>
+                  <textarea class="form-control" name="talamat" type="text" placeholder="Input Alamat" required=""><?=@$valamat?></textarea></div>
                 <div class="form-group">
                   <label>Program Studi</label>
                   <select class="form-control" name="tprodi">
+                    <option value="<?=@$vprodi?>"><?=@$vprodi?></option>
                     <optgroup label="Fakultas Teknologi Informasi dan Komunikasi">
                       <option value="S1-TI">S1-TI</option>
                       <option value="S1-SI">S1-SI</option>
