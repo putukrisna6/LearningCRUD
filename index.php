@@ -1,8 +1,8 @@
 <?php
-  $server = "localhost";
-  $user = "root";
-  $pass = "";
-  $database = "dblatihan";
+  $server = "d1kb8x1fu8rhcnej.cbetxkdyhwsb.us-east-1.rds.amazonaws.com";
+  $user = "eggcbdzlczrvoyqr";
+  $pass = "o4szjtzqwqedkxoe";
+  $database = "jofb338o32n5ij9c";
 
   $koneksi = mysqli_connect($server, $user, $pass, $database) or die(mysqli_error($koneksi));
 
